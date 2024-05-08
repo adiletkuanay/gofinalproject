@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Menu Management</title>
+</head>
+<body>
+  <header>
+    <h1>My Application</h1>
+    <nav>
+      <a href="/menu/view">Menu</a>
+      <a href="/orders/view">Orders</a> 
+      <button onclick="logout()">Logout</button> 
+    </nav>
+  </header>
+  <div>
+    <input type="text" id="newMenuItemName" placeholder="Menu Item Name">
+    <input type="number" id="newMenuItemPrice" placeholder="Menu Item Price">
+    <input type="text" id="newMenuItemCategory" placeholder="Category">
+    <button onclick="createMenuItem()">Add Item</button> 
+  </div>
+
+  <h2>Current Menu</h2>
+  <div id="menuList">
+  </div>
+</body>
+</html>
+<script>
+function createMenuItem() {
+  var name = document.getElementById("newMenuItemName").value;
+  var price = parseFloat(document.getElementById("newMenuItemPrice").value);
+  var category = document.getElementById("newMenuItemCategory").value;
+
+  fetch("http://localhost:8080/menu/", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      name: name,
+      price: price,
+      category: category
+    })
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error("Failed to create menu item");
+    }
+    return response.json(); 
+  })
+  .then(data => {
+    console.log("Menu item created");
+    fetchMenu(); // Обновить список меню
+  })
+  .catch(error => {
+    console.error("Error creating menu item:", error);
+  });
+}
+
+// Получение меню для администратора
+function fetchMenu() {
+  fetch("http://localhost:8080/menu/") // Получаем список элементов меню
+    .then(response => response.json())
+    .then(data => {
+      var menuList = document.getElementById("menuList");
+      menuList.innerHTML = ""; 
+
+      data.forEach(item => {
+        var menuItem = document.createElement("div");
+        menuItem.innerHTML = `
+          <span>Name: ${item.name}, Price: ${item.price}, Category: ${item.category}</span>
+          <button onclick="deleteMenuItem(${item.id})">Delete</button> <!-- Кнопка для удаления -->
+        `;
+
+        menuList.appendChild(menuItem);
+      });
+    })
+    .catch(error => {
+      console.error("Error fetching menu:", error);
+    });
+}
+
+// Функция для удаления элемента меню
+function deleteMenuItem(id) {
+  fetch(`http://localhost:8080/menu/${id}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json"
+    }
+  })
+  .then(response => {
+    if (!response.ok) { // Если ответ не успешен
+      throw new Error("Failed to delete menu item");
+    }
+    console.log("Menu item deleted");
+  })
+  .catch(error => {
+    console.error("Error deleting menu item:", error);
+  });
+}
+function logout() {
+  localStorage.removeItem("authToken"); 
+
+  window.location.href = "/auth/login"; 
+}
+window.onload = function() {
+  fetchMenu(); 
+};
+
+</script>
+<style>
+        /* Global styles */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif; /* Use a common font family */
+}
+
+/* Header styling */
+header {
+  background-color: #333; /* Dark background for the header */
+  color: white; /* White text color */
+  padding: 10px 20px; /* Padding around the header */
+  display: flex; /* Flex layout for the header */
+  justify-content: space-between; /* Space between elements */
+  align-items: center; /* Align items vertically */
+}
+
+/* Navigation styling */
+nav {
+  display: flex; /* Use flexbox for navigation */
+  gap: 10px; /* Space between navigation items */
+}
+
+nav a {
+  color: white; /* White text color for links */
+  text-decoration: none; /* No underline */
+  padding: 5px 10px; /* Padding around links */
+  border-radius: 5px; /* Rounded corners */
+  transition: background-color 0.3s; /* Smooth transition for hover effect */
+}
+
+nav a:hover {
+  background-color: #555; /* Darker background on hover */
+}
+
+/* Logout button styling */
+button {
+  background-color: #ff4444; /* Red background for logout button */
+  color: white; /* White text color */
+  border: none; /* No border */
+  padding: 5px 10px; /* Padding around the button */
+  border-radius: 5px; /* Rounded corners */
+  cursor: pointer; /* Change cursor to indicate it's clickable */
+}
+
+button:hover {
+  background-color: #cc3333; /* Darker red on hover */
+}
+
+/* Content area styling */
+#content {
+  padding: 20px; /* Padding for the content area */
+}
+</style>

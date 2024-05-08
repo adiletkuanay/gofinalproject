@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Application Header</title>
+  <link rel="stylesheet" type="text/css" href="styles.css"> <!-- Link to your CSS file -->
+  <script src="scripts.js"></script> <!-- Link to your JavaScript file -->
+</head>
+<body>
+  <!-- Application header -->
+  <header>
+    <h1>My Application</h1> <!-- Application title -->
+    <nav>
+      <a href="/menu/view">Menu</a> <!-- Link to the menu page -->
+      <a href="/orders/view">Orders</a> <!-- Link to the orders page -->
+      <button onclick="logout()">Logout</button> <!-- Logout button -->
+    </nav>
+  </header>
+
+  <!-- Page content goes here -->
+  <div id="content">
+    <!-- This is where the page content will be rendered -->
+  </div>
+</body>
+</html>
+<script>
+    // Logout function
+function logout() {
+  // Clear any authentication tokens (e.g., remove JWT from local storage)
+  localStorage.removeItem("authToken"); // If using JWT for authentication
+
+  // Redirect to the login page
+  window.location.href = "/auth/login"; // Redirecting to the login page
+}
+
+</script>
+<style>
+    /* Global styles */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif; /* Use a common font family */
+}
+
+/* Header styling */
+header {
+  background-color: #333; /* Dark background for the header */
+  color: white; /* White text color */
+  padding: 10px 20px; /* Padding around the header */
+  display: flex; /* Flex layout for the header */
+  justify-content: space-between; /* Space between elements */
+  align-items: center; /* Align items vertically */
+}
+
+/* Navigation styling */
+nav {
+  display: flex; /* Use flexbox for navigation */
+  gap: 10px; /* Space between navigation items */
+}
+
+nav a {
+  color: white; /* White text color for links */
+  text-decoration: none; /* No underline */
+  padding: 5px 10px; /* Padding around links */
+  border-radius: 5px; /* Rounded corners */
+  transition: background-color 0.3s; /* Smooth transition for hover effect */
+}
+
+nav a:hover {
+  background-color: #555; /* Darker background on hover */
+}
+
+/* Logout button styling */
+button {
+  background-color: #ff4444; /* Red background for logout button */
+  color: white; /* White text color */
+  border: none; /* No border */
+  padding: 5px 10px; /* Padding around the button */
+  border-radius: 5px; /* Rounded corners */
+  cursor: pointer; /* Change cursor to indicate it's clickable */
+}
+
+button:hover {
+  background-color: #cc3333; /* Darker red on hover */
+}
+
+/* Content area styling */
+#content {
+  padding: 20px; /* Padding for the content area */
+}
+
+</style>
